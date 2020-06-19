@@ -9,10 +9,11 @@ if( isset($_POST['prefix']) && $_POST['prefix']=="default_form_status" ) {
     $note = $_POST['note'];
     $select = $_POST['select'];
     $hide = $_POST['hide'];
+    $save = $_POST['save'];
 
     $json = ExternalModules::getProjectSetting($prefix, $pid, 'json');
     $json = !empty($json) ? (array)json_decode($json) : [];
-    $json[$form] = ["note"=>$note,"select"=>$select,"hide"=>$hide];
+    $json[$form] = ["note"=>$note,"select"=>$select,"hide"=>$hide,"save"=>$save];
     ExternalModules::setProjectSetting($prefix, $pid, 'json', json_encode($json));
     
     echo "Saved default form status";

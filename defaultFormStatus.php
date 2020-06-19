@@ -4,6 +4,19 @@ namespace UWMadison\defaultFormStatus;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
+use REDcap;
+
+function printToScreen($string) {
+?>
+    <script type='text/javascript'>
+       $(function() {
+          console.log(<?=json_encode($string); ?>);
+       });
+    </script>
+    <?php
+}
+
+
 class defaultFormStatus extends AbstractExternalModule {
     
     private $module_prefix = 'default_form_status';
@@ -19,7 +32,7 @@ class defaultFormStatus extends AbstractExternalModule {
 
         if (strpos(PAGE, 'Design/online_designer.php') !== false && $project_id != NULL && $_GET['page']) {
             $json = $this->loadJSON($_GET['page']);
-            $json = !empty($json) ? $json : ["note"=>"","select"=>"","hide"=>false];
+            $json = !empty($json) ? $json : ["note"=>"","select"=>"","hide"=>false,"save"=>false];
             $this->passArgument('config',$json);
             $this->includeJs('designer.js');
         }
@@ -30,9 +43,12 @@ class defaultFormStatus extends AbstractExternalModule {
         }
     }
         
-    public function redcap_data_entry_form($project_id, $record, $instrument) {
+    public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
         $json = $this->loadJSON($instrument);
         if ( !empty($json) ) {
+            $data = REDCap::getData($project_id,'array',$record,$instrument.'_complete',$event_id);
+            if ( count($data) != 1 || $data[$record][$event_id][$instrument.'_complete'] == '0' )
+                $json['firstLoad'] = true;
             $this->passArgument('config',$json);
             $this->includeJs('dataentry.js');
         }
