@@ -6,17 +6,6 @@ use ExternalModules\ExternalModules;
 
 use REDcap;
 
-function printToScreen($string) {
-?>
-    <script type='text/javascript'>
-       $(function() {
-          console.log(<?=json_encode($string); ?>);
-       });
-    </script>
-    <?php
-}
-
-
 class defaultFormStatus extends AbstractExternalModule {
     
     private $module_prefix = 'default_form_status';
