@@ -9,9 +9,9 @@ $(document).ready(function () {
     defaultFormStatus.config.hide = defaultFormStatus.config.hide == "true";
     
     if ( defaultFormStatus.config.note )
-        $("[sq_id=\\{\\}]").before(defaultFormStatus.noteHTML.replace('Note',defaultFormStatus.config.note));
-    if ( $("[id$=_complete-tr] select").val()=="0" && defaultFormStatus.config.select)
-        $("[id$=_complete-tr] select").last().val(defaultFormStatus.config.select);
+        $("[sq_id=\\{\\}]").last().before(defaultFormStatus.noteHTML.replace('Note',defaultFormStatus.config.note));
+    if ( $(`[id$=${getParameterByName('page')}_complete-tr] select`).val()=="0" && defaultFormStatus.config.select)
+        $(`[id$=${getParameterByName('page')}_complete-tr] select`).val(defaultFormStatus.config.select);
     if ( defaultFormStatus.config.hide )
         $("[sq_id=\\{\\}]").last().hide().next().hide();
     if ( defaultFormStatus.config.firstLoad && defaultFormStatus.config.save ) 
