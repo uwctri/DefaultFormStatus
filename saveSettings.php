@@ -8,8 +8,8 @@ if( isset($_POST['prefix']) && $_POST['prefix']=="default_form_status" ) {
     $form = $_POST['form'];
     $note = $_POST['note'];
     $select = $_POST['select'];
-    $hide = $_POST['hide'];
-    $save = $_POST['save'];
+    $hide = $_POST['hide'] == "true";
+    $save = $_POST['save'] == "true";
 
     $json = ExternalModules::getProjectSetting($prefix, $pid, 'json');
     $json = !empty($json) ? (array)json_decode($json) : [];

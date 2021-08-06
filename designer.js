@@ -69,8 +69,8 @@ $(document).ready(function () {
     
     $('#formStatusNote').val(defaultFormStatus.config.note);
     $('#defaultFormStatus').val(defaultFormStatus.config.select);
-    $('#hideFromStatus').prop('checked',defaultFormStatus.config.hide == "true");
-    $('#autoSave').prop('checked',defaultFormStatus.config.save == "true");
+    $('#hideFromStatus').prop('checked',defaultFormStatus.config.hide);
+    $('#autoSave').prop('checked',defaultFormStatus.config.save);
     
     $('#autoSave').on('change', autoSaveStatus);
     $('#formStatusNote, #defaultFormStatus, #hideFromStatus, #autoSave').on('change', saveDFSsettings);

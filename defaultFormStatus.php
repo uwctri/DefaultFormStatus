@@ -3,7 +3,6 @@
 namespace UWMadison\defaultFormStatus;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-
 use REDcap;
 
 class defaultFormStatus extends AbstractExternalModule {
@@ -18,7 +17,8 @@ class defaultFormStatus extends AbstractExternalModule {
     
     public function redcap_every_page_top($project_id) {
         $this->initGlobal();
-
+        
+        // Designer Page
         if (strpos(PAGE, 'Design/online_designer.php') !== false && $project_id != NULL && $_GET['page']) {
             $json = $this->loadJSON($_GET['page']);
             $json = !empty($json) ? $json : ["note"=>"","select"=>"","hide"=>false,"save"=>false];
