@@ -2,7 +2,9 @@
 
 ## What does it do?
 
-DFS allows you to set a default form status (complete, incomplete, unverified), auto-save an instrument when it is first opened, and hide the form status from the end-user to prevent editing.
+DFS allows you to set a default form status (complete, incomplete, unverified), auto-save an instrument when it is first opened, hide the form status from the end-user to prevent editing, and leave notes at the end of the form for any reason. 
+
+![](https://i.imgur.com/WthuOQn.png)
 
 ## Installing
 
