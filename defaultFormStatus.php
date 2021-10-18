@@ -7,13 +7,7 @@ use REDcap;
 
 class defaultFormStatus extends AbstractExternalModule {
     
-    private $module_prefix = 'default_form_status';
     private $module_global = 'defaultFormStatus';
-    private $module_name = 'defaultFormStatus';
-    
-    public function __construct() {
-            parent::__construct();
-    }
     
     public function redcap_every_page_top($project_id) {
         $this->initGlobal();
@@ -51,7 +45,7 @@ class defaultFormStatus extends AbstractExternalModule {
     
     private function initGlobal() {
         $data = array(
-            "modulePrefix" => $this->module_prefix,
+            "modulePrefix" => $this->PREFIX,
             "post" => $this->getUrl('saveSettings.php')
         );
         echo "<script>var ".$this->module_global." = ".json_encode($data).";</script>";
