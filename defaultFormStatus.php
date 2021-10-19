@@ -21,7 +21,7 @@ class defaultFormStatus extends AbstractExternalModule {
         }
         
         // Custom Config page
-        if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false && $project_id != NULL) {
+        if (strpos(PAGE, 'manager/project.php') !== false && $project_id != NULL) {
             $this->includeJs('config.js');
         }
     }
