@@ -1,3 +1,4 @@
+defaultFormStatus.fn = {};
 defaultFormStatus.html = `
 <div class="customFormStatus">
     <span>Form Status</span>
@@ -5,12 +6,12 @@ defaultFormStatus.html = `
         <div class="dfsInnerFrame">
             <div class="row align-items-center">
                 <div class="col-3">End-of-form Note:</div>
-                <div class="col-9" style=""><input id="formStatusNote" type="text" style="width:100%;"></div>
+                <div class="col-9" style=""><input id="formStatusNote" name="note" type="text" style="width:100%;"></div>
             </div>
             <div class="row align-items-center">
                 <div class="col-3">Default Form Status:</div>
                 <div class="col-9">
-                    <select id="defaultFormStatus">
+                    <select id="defaultFormStatus" name="select">
                         <option value="">None</option>
                         <option value="0">Incomplete</option>
                         <option value="1">Unverified</option>
@@ -20,16 +21,15 @@ defaultFormStatus.html = `
             </div>
             <div class="row align-items-center">
                 <div class="col-3">Hide From Status?</div>
-                <div class="col-9"><input id="hideFromStatus" type="checkbox"></div>
+                <div class="col-9"><input id="hideFromStatus" type="checkbox" name="hide"></div>
             </div>
             <div class="row align-items-center">
                 <div class="col-3">Auto Save On First Open?</div>
-                <div class="col-9"><input id="autoSave" type="checkbox"></div>
+                <div class="col-9"><input id="autoSave" type="checkbox" name="save"></div>
             </div>
         </div>
     </div>
-</div>
-`;
+</div>`;
 
 defaultFormStatus.css = `
 <style>
@@ -60,56 +60,65 @@ defaultFormStatus.css = `
 #west {
     height: min-content;
 }
-</style>
-`;
+</style>`;
 
-$(document).ready(function () {
-    $('head').append(defaultFormStatus.css);
-    $("#draggablecontainer_parent").after(defaultFormStatus.html);
-    
-    $('#formStatusNote').val(defaultFormStatus.config.note);
-    $('#defaultFormStatus').val(defaultFormStatus.config.select);
-    $('#hideFromStatus').prop('checked',defaultFormStatus.config.hide);
-    $('#autoSave').prop('checked',defaultFormStatus.config.save);
-    
-    $('#autoSave').on('change', autoSaveStatus);
-    $('#formStatusNote, #defaultFormStatus, #hideFromStatus, #autoSave').on('change', saveDFSsettings);
-});
+/*
+If the autosave feature is enabled we can't allow the form status
+to default to "Incomplete" or blank as we won't be able to tell
+if we have saved yet. Force the user to pick something else.
+*/
+defaultFormStatus.fn.autoSaveStatus = function() {
 
-function autoSaveStatus() {
+    // Default back to allowing all options if autoSave is off
     $("#defaultFormStatus option").prop('disabled', false);
-    if ( !$('#autoSave').is(':checked') )
-        return;
+    if (!$('#autoSave').is(':checked')) return;
+
+    // Auto save is on, ban "blank" and "Incomplete" options
     $("#defaultFormStatus option:lt(2)").prop('disabled', true);
-    if ( ["1","2"].includes( $('#defaultFormStatus').val() ) )
-        return;
+    if (["1", "2"].includes($('#defaultFormStatus').val())) return;
+
+    // Blank or incomplete are selected, set status to unverified
     $("#defaultFormStatus").val('1');
 }
 
-function saveDFSsettings() {
-    defaultFormStatus.config.note = $('#formStatusNote').val();
-    defaultFormStatus.config.select = $('#defaultFormStatus').val();
-    defaultFormStatus.config.hide = $('#hideFromStatus').is(':checked');
-    defaultFormStatus.config.save = $('#autoSave').is(':checked');
+/*
+Save settings back to the project level, only send back the settings
+for the current instrument
+*/
+defaultFormStatus.fn.saveDFSsettings = function() {
+
+    // Save all the Settings back to the global
+    $(".customFormStatus").find('input, select').each(function() {
+        defaultFormStatus.config[$(this).attr('name')] =
+            $(this).attr('type') == "checkbox" ? $(this).is(':checked') : $(this).val();
+    });
+
+    // Post Back to Router
     $.ajax({
         method: 'POST',
-        url: defaultFormStatus.post,
+        url: defaultFormStatus.router,
         data: {
-            pid: getParameterByName('pid'),
-            prefix: defaultFormStatus.modulePrefix,
-            form: getParameterByName('page'),
-            note: defaultFormStatus.config.note,
-            select: defaultFormStatus.config.select,
-            hide: defaultFormStatus.config.hide,
-            save: defaultFormStatus.config.save
+            route: 'saveSettings',
+            instrument: getParameterByName('page'),
+            config: JSON.stringify(defaultFormStatus.config)
         },
-        error: function(jqXHR, textStatus, errorThrown){ 
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        },
-        success: function(data){ 
-            console.log(data);
-        }
+        error: (jqXHR, textStatus, errorThrown) => console.log(`${jqXHR}\n${textStatus}\n${errorThrown}`),
+        success: (data) => console.log(data)
     });
 }
+
+$(document).ready(function() {
+
+    // Load CSS and the HTML Form
+    $('head').append(defaultFormStatus.css);
+    $("#draggablecontainer_parent").after(defaultFormStatus.html);
+
+    // Load the settings for display
+    $.each(defaultFormStatus.config, function(settingName, data) {
+        $(`[name=${settingName}]`).val(data).prop('checked', data);
+    });
+
+    // Attach event listeners
+    $('#autoSave').on('change', defaultFormStatus.fn.autoSaveStatus);
+    $(".customFormStatus").find('input, select').on('change', defaultFormStatus.fn.saveDFSsettings);
+});
