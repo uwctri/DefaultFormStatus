@@ -1,22 +1,21 @@
-defaultFormStatus.noteHTML = `
-<tr id="default-form-status-custom-note-tr" sq_id="default-form-status-custom-note-tr">
-    <td class="labelrc col-12" colspan="2">
-        <div class="blue"> Note </div>
-    </td>
-</tr>`;
+$(document).ready(() => {
+    let settings = ExternalModules.UWMadison.defaultFormStatus.settings;
+    let html = `
+    <tr id="default-form-status-custom-note-tr" sq_id="default-form-status-custom-note-tr">
+        <td class="labelrc col-12" colspan="2">
+            <div class="blue"> Note </div>
+        </td>
+    </tr>`;
 
-$(document).ready(function() {
+    if (settings.note)
+        $("[sq_id=\\{\\}]").before(html.replace('Note', settings.note));
 
-    if (defaultFormStatus.config.note)
-        $("[sq_id=\\{\\}]").before(defaultFormStatus.noteHTML.replace('Note', defaultFormStatus.config.note));
+    if ($("[id$=_complete-tr] select").val() == "0" && settings.select)
+        $("[id$=_complete-tr] select").last().val(settings.select);
 
-    if ($("[id$=_complete-tr] select").val() == "0" && defaultFormStatus.config.select)
-        $("[id$=_complete-tr] select").last().val(defaultFormStatus.config.select);
-
-    if (defaultFormStatus.config.hide)
+    if (settings.hide)
         $("[sq_id=\\{\\}]").last().hide().next().hide();
 
-    if (defaultFormStatus.config.firstLoad && defaultFormStatus.config.save)
+    if (settings.firstLoad && settings.save)
         dataEntrySubmit('submit-btn-savecontinue');
-
 });
