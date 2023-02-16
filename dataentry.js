@@ -13,8 +13,11 @@ $(document).ready(() => {
     if ($("[id$=_complete-tr] select").val() == "0" && settings.select)
         $("[id$=_complete-tr] select").last().val(settings.select);
 
-    if (settings.hide)
-        $("[sq_id=\\{\\}]").last().hide().next().hide();
+    if (settings.hide) {
+        $("#__LOCKRECORD__-tr").hide();
+        $(`#${getParameterByName("page")}_complete-tr`).hide();
+        $(`#${getParameterByName("page")}_complete-sh-tr`).hide();
+    }
 
     if (settings.firstLoad && settings.save)
         dataEntrySubmit('submit-btn-savecontinue');

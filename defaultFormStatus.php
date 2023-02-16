@@ -50,7 +50,7 @@ class defaultFormStatus extends AbstractExternalModule
     }
 
     /*
-    TODO
+    Handle write backs from data entry page
     */
     public function redcap_module_ajax($action, $payload, $project_id, $record, $instrument)
     {
