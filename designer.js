@@ -90,6 +90,7 @@ $(document).ready(() => {
     const saveDFSsettings = () => {
 
         // Save all the Settings back to the global
+        module.settings = {};
         $(".customFormStatus").find('input, select').each(function () {
             module.settings[$(this).attr('name')] =
                 $(this).attr('type') == "checkbox" ? $(this).is(':checked') : $(this).val();

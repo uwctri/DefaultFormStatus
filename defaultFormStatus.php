@@ -56,10 +56,10 @@ class defaultFormStatus extends AbstractExternalModule
     {
         $result = false;
         if ($action == "save" && !empty($instrument)) {
-            $json = ExternalModules::getProjectSetting($this->PREFIX, $project_id, 'json');
+            $json = ExternalModules::getProjectSetting($this->getPrefix(), $project_id, 'json');
             $json = !empty($json) ? json_decode($json, true) : [];
             $json[$instrument] = $payload;
-            ExternalModules::setProjectSetting($this->PREFIX, $project_id, 'json', json_encode($json));
+            ExternalModules::setProjectSetting($this->getPrefix(), $project_id, 'json', json_encode($json));
             $result = true;
         }
         return ["success" =>  $result];
@@ -80,7 +80,7 @@ class defaultFormStatus extends AbstractExternalModule
     private function loadSettings($settings = [])
     {
         $this->initializeJavascriptModuleObject();
-        $settings["prefix"] = $this->PREFIX;
+        $settings["prefix"] = $this->getPrefix();
         $settings = json_encode($settings);
         echo "<script>Object.assign({$this->getJavascriptModuleObjectName()}, {$settings});</script>";
     }
