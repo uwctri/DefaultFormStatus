@@ -118,4 +118,5 @@ $(document).ready(() => {
     // Attach event listeners
     $('#autoSave').on('change', autoSaveStatus);
     $(".customFormStatus").find('input, select').on('change', saveDFSsettings);
+    autoSaveStatus();
 });
